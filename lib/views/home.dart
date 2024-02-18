@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:alarm_box/pages/states.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart'; 
 
 class Home extends StatelessWidget {
-  const Home({super.key});
+  Home({super.key});
+  final DatabaseReference database = FirebaseDatabase.instance.ref();
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +46,11 @@ class Home extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () async {
                     try {
-                      var isClosedSnapshot = await boxRef.child("isClosed").get();
-                      var isFullSnapshot = await boxRef.child("isFull").get();
+                      var isClosedSnapshot = await database.child("isClosed").get();
+                      var isFullSnapshot = await database.child("isFull").get();
                       var isClosed = isClosedSnapshot.value;
 
-                      await boxRef.update({
+                      await database.update({
                         'isClosed': 0, 
                       });
                     } catch (e) {
@@ -72,11 +74,11 @@ class Home extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () async {
                     try {
-                      var isClosedSnapshot = await boxRef.child("isClosed").get();
-                      var isFullSnapshot = await boxRef.child("isFull").get();
-                      var isOpen = isOpenSnapshot.value;
+                      var isClosedSnapshot = await database.child("isClosed").get();
+                      var isFullSnapshot = await database.child("isFull").get();
+                      var isClosed = isClosedSnapshot.value;
 
-                      await boxRef.update({
+                      await database.update({
                         'isClosed': 1, 
                       });
                     } catch (e) {
