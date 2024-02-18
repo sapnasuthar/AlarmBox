@@ -42,10 +42,20 @@ class Home extends StatelessWidget {
               // Add your buttons here
               Center(
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Define what happens when the button is pressed
+                  onPressed: () async {
+                    try {
+                      var isClosedSnapshot = await boxRef.child("isClosed").get();
+                      var isFullSnapshot = await boxRef.child("isFull").get();
+                      var isClosed = isClosedSnapshot.value;
+
+                      await boxRef.update({
+                        'isClosed': 0, 
+                      });
+                    } catch (e) {
+                      print(e);
+                    }
                   },
-                  child: Text('Button 1'),
+                  child: Text('Open Box'),
                   style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.all(20),
                   fixedSize: Size(300, 80),
@@ -60,10 +70,20 @@ class Home extends StatelessWidget {
               SizedBox(height: 40), // Space between buttons
               Center(
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Define what happens when the button is pressed
+                  onPressed: () async {
+                    try {
+                      var isClosedSnapshot = await boxRef.child("isClosed").get();
+                      var isFullSnapshot = await boxRef.child("isFull").get();
+                      var isOpen = isOpenSnapshot.value;
+
+                      await boxRef.update({
+                        'isClosed': 1, 
+                      });
+                    } catch (e) {
+                      print(e);
+                    }
                   },
-                  child: Text('Button 2'),
+                  child: Text('Close Box'),
                   style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.all(20),
                   fixedSize: Size(300, 80),
