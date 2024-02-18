@@ -1,49 +1,65 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-//import 'package:lock/pages/seller_status_page.dart';
-//import 'package:provider/provider.dart';
+import 'package:firebase_database/firebase_database.dart';
 
-//import '../pages/buyer_status_page.dart';
-//import '../models/user_model.dart';
+import '/pages/close_box.dart';
 
-class States extends StatelessWidget {
-  final DatabaseReference _database = FirebaseDatabase.instance.ref();
-  var isOpen;
-  var isFull;
+class States extends StatefulWidget {
+  @override
+  _States createState() => _States();
+}
 
-  void updateDatabase() {
-    _database.child('').update({'status': 'closed'});
+class _States extends State<States> {
+  final database = FirebaseDatabase.instance.ref();
+
+  //bool isButtonActive = false;
+  bool isUserAuthentified = false;
+  bool isBoxOpen = false;
+
+  void onAuthenticationComplete(bool isAuthentified) {
+    setState(() {
+      isUserAuthentified = isAuthentified;
+    });
+
+    if (isBoxOpen) {
+      //closeLockbox();
+      Navigator.pushAndRemoveUntil(
+      context,
+        MaterialPageRoute(
+          builder: (context) => CloseBoxPage(),
+        ),
+        (route) => false,
+      );
+    }
+    else if (isUserAuthentified) {
+      // Perform actions after successful authentication
+      print('User is authenticated');
+      openLockbox();
+      Navigator.pushAndRemoveUntil(
+      context,
+        MaterialPageRoute(
+          builder: (context) => CloseBoxPage(),
+        ),
+        (route) => false,
+      );
+    } else {
+      // Handle unsuccessful authentication
+      print('User is not authenticated');
+    }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final boxRef = _database.child('box/');
-    isOpen = boxRef.child("isOpen").get();
-    isFull = boxRef.child("isFull").get();
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Close Lockbox'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () async {
-            try {
-              var isOpenSnapshot = await boxRef.child("isOpen").get();
-              var isFullSnapshot = await boxRef.child("isFull").get();
-              var isOpen = isOpenSnapshot.value;
-              var isFull = isFullSnapshot.value;
-
-              await boxRef.update({
-                'isFull': isFull == 0 ? 1 : 0,
-                'isOpen': isOpen == 0 ? 1 : 0, // ADD TEMPERATURE
-              });
-            } catch (e) {
-              print(e);
-            }
-          },
-          child: Text('Close Lockbox'),
-        ),
-      ),
-    );
+  void openLockbox () async {
+    final boxRef = database.child('box/');
+    try {
+      await boxRef
+        .update({
+          'isOpen': 1
+        }
+      );
+      setState(() {
+        isBoxOpen = true;
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 }

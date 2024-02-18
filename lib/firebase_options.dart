@@ -59,7 +59,7 @@ class DefaultFirebaseOptions {
     appId: '1:211133215594:android:73bac8ce37aa28abd1eb13',
     messagingSenderId: '211133215594',
     projectId: 'makeuoft-2024',
-    databaseURL: 'https://makeuoft-2024-default-rtdb.firebaseio.com',
+    databaseURL: 'https://makeuoft-2024-default-rtdb.firebaseio.com/',
     storageBucket: 'makeuoft-2024.appspot.com',
   );
 
